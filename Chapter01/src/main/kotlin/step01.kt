@@ -17,7 +17,6 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     for (perf in invoice.performances) {
         val play = plays[perf.playId] ?: continue
-        val thisAmount = amountFor(perf)
 
         // 포인트를 적립한다.
         volumeCredits += max(perf.audience - 30, 0)
@@ -28,8 +27,8 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         }
 
         // 청구 내역을 출력한다.
-        result += "${play.name}: ${format(thisAmount.toDouble()/100)} (${perf.audience}석)\n"
-        totalAmount += thisAmount
+        result += "${play.name}: ${format(amountFor(perf).toDouble()/100)} (${perf.audience}석)\n"
+        totalAmount += amountFor(perf)
     }
 
     result += "총액: ${format(totalAmount.toDouble()/100)}\n"
