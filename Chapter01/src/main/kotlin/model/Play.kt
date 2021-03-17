@@ -6,6 +6,6 @@ data class Play(
 )
 
 enum class PlayType {
-    COMEDY,
-    TRAGEDY
+    TRAGEDY,
+    COMEDY
 }

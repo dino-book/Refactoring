@@ -5,32 +5,6 @@ import model.PlayType
 import kotlin.math.max
 import kotlin.math.round
 
-val plays = mapOf(
-    "hamlet" to Play("Hamlet", PlayType.TRAGEDY),
-    "as-like" to Play("As You Like It", PlayType.COMEDY),
-    "othello" to Play("Othello", PlayType.TRAGEDY)
-)
-
-val invoices = listOf(
-    Invoice(
-        "BigCo",
-        listOf(
-            Performance(
-                "hamlet",
-                55
-            ),
-            Performance(
-                "as-like",
-                35
-            ),
-            Performance(
-                "othello",
-                40
-            )
-        )
-    )
-)
-
 private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     var totalAmount = 0
     var volumeCredits = 0
@@ -43,23 +17,7 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     for (perf in invoice.performances) {
         val play = plays[perf.playId] ?: continue
-        var thisAmount = 0
-
-        when (play.type) {
-            PlayType.TRAGEDY -> {
-                thisAmount = 40_000
-                if (perf.audience > 30) {
-                    thisAmount += 1_000 * (perf.audience - 30)
-                }
-            }
-            PlayType.COMEDY -> {
-                thisAmount = 30_000
-                if (perf.audience > 20) {
-                    thisAmount += 10_000 + 500 * (perf.audience - 20)
-                }
-                thisAmount += 300 * perf.audience
-            }
-        }
+        val thisAmount = amountFor(perf, play)
 
         // 포인트를 적립한다.
         volumeCredits += max(perf.audience - 30, 0)
@@ -79,6 +37,24 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     return result
 }
 
-fun main() {
-    println(statement(invoices[0], plays))
+private fun amountFor(performance: Performance, play: Play): Int {
+    var thisAmount = 0
+
+    when (play.type) {
+        PlayType.TRAGEDY -> {
+            thisAmount = 40_000
+            if (performance.audience > 30) {
+                thisAmount += 1_000 * (performance.audience - 30)
+            }
+        }
+        PlayType.COMEDY -> {
+            thisAmount = 30_000
+            if (performance.audience > 20) {
+                thisAmount += 10_000 + 500 * (performance.audience - 20)
+            }
+            thisAmount += 300 * performance.audience
+        }
+    }
+
+    return thisAmount
 }
