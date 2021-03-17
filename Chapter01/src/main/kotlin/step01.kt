@@ -17,7 +17,7 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     for (perf in invoice.performances) {
         val play = plays[perf.playId] ?: continue
-        val thisAmount = amountFor(perf, play)
+        val thisAmount = amountFor(perf)
 
         // 포인트를 적립한다.
         volumeCredits += max(perf.audience - 30, 0)
@@ -37,24 +37,31 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     return result
 }
 
-private fun amountFor(performance: Performance, play: Play): Int {
-    var thisAmount = 0
+private fun amountFor(performance: Performance): Int {
+    var result = 0
 
-    when (play.type) {
+    when (playFor(performance)?.type) {
         PlayType.TRAGEDY -> {
-            thisAmount = 40_000
+            result = 40_000
             if (performance.audience > 30) {
-                thisAmount += 1_000 * (performance.audience - 30)
+                result += 1_000 * (performance.audience - 30)
             }
         }
         PlayType.COMEDY -> {
-            thisAmount = 30_000
+            result = 30_000
             if (performance.audience > 20) {
-                thisAmount += 10_000 + 500 * (performance.audience - 20)
+                result += 10_000 + 500 * (performance.audience - 20)
             }
-            thisAmount += 300 * performance.audience
+            result += 300 * performance.audience
+        }
+        null -> {
+            // do nothing
         }
     }
 
-    return thisAmount
+    return result
+}
+
+private fun playFor(performance: Performance): Play? {
+    return plays[performance.playId]
 }
