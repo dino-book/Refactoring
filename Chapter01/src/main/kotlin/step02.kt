@@ -41,13 +41,9 @@ private fun enrichPerformance(performanceSummary: PerformanceSummary): Performan
 }
 
 private fun totalAmount(performances: List<Performance>): Int {
-    var totalAmount = 0
-
-    for (perf in performances) {
-        totalAmount += perf.amount
+    return performances.sumOf { performances ->
+        performances.amount
     }
-
-    return totalAmount
 }
 
 private fun amountFor(performance: PerformanceSummary): Int {
@@ -99,11 +95,7 @@ private fun usd(amount: Int): String {
 }
 
 private fun totalVolumeCredits(performances: List<Performance>): Int {
-    var volumeCredits = 0
-
-    for (perf in performances) {
-        volumeCredits += perf.volumeCredits
+    return performances.sumOf { performance ->
+        performance.volumeCredits
     }
-
-    return volumeCredits
 }
