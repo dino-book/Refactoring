@@ -3,23 +3,48 @@ import kotlin.math.max
 import kotlin.math.round
 
 private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    var result = "청구 내역 (고객명 : ${invoice.customer})\n"
-
-    for (perf in invoice.performanceSummaries) {
-        // 청구 내역을 출력한다.
-        result += "${playFor(perf)?.name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
+    val statement = invoice.performanceSummaries.map { performanceSummaries ->
+        enrichPerformance(performanceSummaries)
+    }.let { performances ->
+        Statement(
+            invoice.customer,
+            performances,
+            totalAmount(performances),
+            totalVolumeCredits(performances)
+            )
     }
 
-    result += "총액: ${usd(totalAmount(invoice))}\n"
-    result += "적립 포인트: ${totalVolumeCredits(invoice)}점\n"
+    return renderPlainText(statement, plays)
+}
+
+private fun renderPlainText(statement: Statement, plays: Map<String, Play>): String {
+    var result = "청구 내역 (고객명 : ${statement.customer})\n"
+
+    for (perf in statement.performances) {
+        // 청구 내역을 출력한다.
+        result += "${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n"
+    }
+
+    result += "총액: ${usd(statement.totalAmount)}\n"
+    result += "적립 포인트: ${statement.totalVolumeCredits}점\n"
     return result
 }
 
-private fun totalAmount(invoice: Invoice): Int {
+private fun enrichPerformance(performanceSummary: PerformanceSummary): Performance {
+    return Performance(
+        performanceSummary.playId,
+        playFor(performanceSummary)!!,
+        performanceSummary.audience,
+        amountFor(performanceSummary),
+        volumeCreditsFor(performanceSummary)
+    )
+}
+
+private fun totalAmount(performances: List<Performance>): Int {
     var totalAmount = 0
 
-    for (perf in invoice.performanceSummaries) {
-        totalAmount += amountFor(perf)
+    for (perf in performances) {
+        totalAmount += perf.amount
     }
 
     return totalAmount
@@ -28,7 +53,7 @@ private fun totalAmount(invoice: Invoice): Int {
 private fun amountFor(performance: PerformanceSummary): Int {
     var result = 0
 
-    when (playFor(performance)?.type) {
+    when (playFor(performance)!!.type) {
         PlayType.TRAGEDY -> {
             result = 40_000
             if (performance.audience > 30) {
@@ -41,9 +66,6 @@ private fun amountFor(performance: PerformanceSummary): Int {
                 result += 10_000 + 500 * (performance.audience - 20)
             }
             result += 300 * performance.audience
-        }
-        null -> {
-            // do nothing
         }
     }
 
@@ -76,11 +98,11 @@ private fun usd(amount: Int): String {
 
 }
 
-private fun totalVolumeCredits(invoice: Invoice): Int {
+private fun totalVolumeCredits(performances: List<Performance>): Int {
     var volumeCredits = 0
 
-    for (perf in invoice.performanceSummaries) {
-        volumeCredits += volumeCreditsFor(perf)
+    for (perf in performances) {
+        volumeCredits += perf.volumeCredits
     }
 
     return volumeCredits

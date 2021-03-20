@@ -1,7 +1,4 @@
-import model.Invoice
-import model.Performance
-import model.Play
-import model.PlayType
+import model.*
 import kotlin.math.max
 import kotlin.math.round
 
@@ -15,15 +12,15 @@ val invoices = listOf(
     Invoice(
         "BigCo",
         listOf(
-            Performance(
+            PerformanceSummary(
                 "hamlet",
                 55
             ),
-            Performance(
+            PerformanceSummary(
                 "as-like",
                 35
             ),
-            Performance(
+            PerformanceSummary(
                 "othello",
                 40
             )
@@ -41,7 +38,7 @@ private fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         "$$formattedAmount"
     }
 
-    for (perf in invoice.performances) {
+    for (perf in invoice.performanceSummaries) {
         val play = plays[perf.playId] ?: continue
         var thisAmount = 0
 
