@@ -3,28 +3,18 @@ package model
 import kotlin.math.max
 
 abstract class PerformanceCalculator(
-    private val performanceSummary: PerformanceSummary,
+    protected val performanceSummary: PerformanceSummary,
     val play: Play
 ) {
     abstract fun amount(): Int
 
-    fun volumeCredits(): Int {
-        var volumeCredits = 0
-
-        // 포인트를 적립한다.
-        volumeCredits += max(performanceSummary.audience - 30, 0)
-
-        // 희극 관객 5명마다 추가 포인트를 제공한다.
-        if (play.type == PlayType.COMEDY) {
-            volumeCredits += performanceSummary.audience / 5
-        }
-
-        return volumeCredits
+    open fun volumeCredits(): Int {
+        return max(performanceSummary.audience - 30, 0)
     }
 }
 
 class TragedyCalculator(
-    private val performanceSummary: PerformanceSummary,
+    performanceSummary: PerformanceSummary,
     play: Play
 ) : PerformanceCalculator(performanceSummary, play) {
     override fun amount(): Int {
@@ -35,10 +25,14 @@ class TragedyCalculator(
 
         return result
     }
+
+    override fun volumeCredits(): Int {
+        return super.volumeCredits() + performanceSummary.audience / 5
+    }
 }
 
 class ComedyCalculator(
-    private val performanceSummary: PerformanceSummary,
+    performanceSummary: PerformanceSummary,
     play: Play
 ) : PerformanceCalculator(performanceSummary, play) {
     override fun amount(): Int {
