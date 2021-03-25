@@ -54,7 +54,7 @@ private fun renderHtml(statement: Statement): String {
 }
 
 private fun enrichPerformance(performanceSummary: PerformanceSummary): Performance {
-    val calculator = PerformanceCalculator(performanceSummary, playFor(performanceSummary)!!)
+    val calculator = createPerformanceCalculator(performanceSummary, playFor(performanceSummary)!!)
 
     return Performance(
         performanceSummary.playId,
@@ -65,32 +65,21 @@ private fun enrichPerformance(performanceSummary: PerformanceSummary): Performan
     )
 }
 
+private fun createPerformanceCalculator(performance: PerformanceSummary, play: Play): PerformanceCalculator {
+    return when (play.type) {
+        PlayType.TRAGEDY -> TragedyCalculator(performance, play)
+        PlayType.COMEDY -> ComedyCalculator(performance, play)
+    }
+}
+
 private fun totalAmount(performances: List<Performance>): Int {
     return performances.sumOf { performance ->
         performance.amount
     }
 }
 
-private fun amountFor(performance: PerformanceSummary): Int {
-    return PerformanceCalculator(performance, playFor(performance)!!).amount()
-}
-
 private fun playFor(performance: PerformanceSummary): Play? {
     return plays[performance.playId]
-}
-
-private fun volumeCreditsFor(performance: PerformanceSummary, playType: PlayType): Int {
-    var volumeCredits = 0
-
-    // 포인트를 적립한다.
-    volumeCredits += max(performance.audience - 30, 0)
-
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if (playType == PlayType.COMEDY) {
-        volumeCredits += performance.audience / 5
-    }
-
-    return volumeCredits
 }
 
 private fun usd(amount: Int): String {

@@ -2,31 +2,11 @@ package model
 
 import kotlin.math.max
 
-class PerformanceCalculator(
+abstract class PerformanceCalculator(
     private val performanceSummary: PerformanceSummary,
     val play: Play
 ) {
-    fun amount(): Int {
-        var result = 0
-
-        when (play.type) {
-            PlayType.TRAGEDY -> {
-                result = 40_000
-                if (performanceSummary.audience > 30) {
-                    result += 1_000 * (performanceSummary.audience - 30)
-                }
-            }
-            PlayType.COMEDY -> {
-                result = 30_000
-                if (performanceSummary.audience > 20) {
-                    result += 10_000 + 500 * (performanceSummary.audience - 20)
-                }
-                result += 300 * performanceSummary.audience
-            }
-        }
-
-        return result
-    }
+    abstract fun amount(): Int
 
     fun volumeCredits(): Int {
         var volumeCredits = 0
@@ -40,5 +20,34 @@ class PerformanceCalculator(
         }
 
         return volumeCredits
+    }
+}
+
+class TragedyCalculator(
+    private val performanceSummary: PerformanceSummary,
+    play: Play
+) : PerformanceCalculator(performanceSummary, play) {
+    override fun amount(): Int {
+        var result = 40_000
+        if (performanceSummary.audience > 30) {
+            result += 1_000 * (performanceSummary.audience - 30)
+        }
+
+        return result
+    }
+}
+
+class ComedyCalculator(
+    private val performanceSummary: PerformanceSummary,
+    play: Play
+) : PerformanceCalculator(performanceSummary, play) {
+    override fun amount(): Int {
+        var result = 30_000
+        if (performanceSummary.audience > 20) {
+            result += 10_000 + 500 * (performanceSummary.audience - 20)
+        }
+        result += 300 * performanceSummary.audience
+
+        return result
     }
 }
