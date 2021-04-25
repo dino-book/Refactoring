@@ -3,7 +3,7 @@ import kotlin.math.min
 data class Province(
     val name: String,
     val producers: MutableList<Producer>,
-    val totalProduction: Int,
+    var totalProduction: Int,
     val demand: Int,
     val price: Int
 ) {
@@ -27,15 +27,15 @@ data class Province(
         return demandValue() - demandCost()
     }
 
-    fun demandValue(): Int {
+    private fun demandValue(): Int {
         return satisfiedDemand() * price
     }
 
-    fun satisfiedDemand(): Int {
+    private fun satisfiedDemand(): Int {
         return min(demand, totalProduction)
     }
 
-    fun demandCost(): Int {
+    private fun demandCost(): Int {
         var remainingDemand = demand
         var result = 0
         producers.sortedWith { producer1, producer2 ->

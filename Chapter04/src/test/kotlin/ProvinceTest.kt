@@ -29,4 +29,11 @@ class ProvinceTest {
     fun profit() {
         assert(asia.profit() == 230)
     }
+
+    @Test
+    fun setProduction() {
+        asia.producers[0].production = 20
+        assert(asia.shortFall() == -6)
+        assert(asia.profit() == 292)
+    }
 }
