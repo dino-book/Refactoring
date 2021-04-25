@@ -4,7 +4,7 @@ data class Province(
     val name: String,
     val producers: MutableList<Producer>,
     var totalProduction: Int,
-    val demand: Int,
+    var demand: Int,
     val price: Int
 ) {
     constructor(document: Document) : this(

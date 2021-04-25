@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ProvinceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-04-25T13:50:59" hostname="DESKTOP-RLFQ05F" time="2.485">
+<testsuite name="ProvinceTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2021-04-25T13:58:26" hostname="DESKTOP-RLFQ05F" time="0.012">
   <properties/>
-  <testcase name="setProduction()" classname="ProvinceTest" time="2.318"/>
-  <testcase name="shortfall()" classname="ProvinceTest" time="0.086"/>
-  <testcase name="profit()" classname="ProvinceTest" time="0.08"/>
+  <testcase name="setProduction()" classname="ProvinceTest" time="0.007"/>
+  <testcase name="shortfall()" classname="ProvinceTest" time="0.0"/>
+  <testcase name="zero_demand()" classname="ProvinceTest" time="0.0"/>
+  <testcase name="profit()" classname="ProvinceTest" time="0.0"/>
+  <testcase name="negative_demand()" classname="ProvinceTest" time="0.0"/>
+  <testcase name="no_producers()" classname="ProvinceTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
