@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ProvinceTest {
@@ -12,9 +13,20 @@ class ProvinceTest {
         20
     )
 
+    lateinit var asia: Province
+
+    @BeforeEach
+    fun setAsiaProvince() {
+        asia = Province(sampleDocument)
+    }
+
     @Test
-    fun shortfall_is_five() {
-        val asia = Province(sampleDocument)
+    fun shortfall() {
         assert(asia.shortFall() == 5)
+    }
+
+    @Test
+    fun profit() {
+        assert(asia.profit() == 230)
     }
 }
